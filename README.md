@@ -1,48 +1,103 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# Conector n8n - True Random Number Generator (Desafio Onfly)
 
-# n8n-nodes-starter
+Este repositório contém o código-fonte de um conector (nó) customizado para a plataforma de automação n8n, desenvolvido como parte do processo seletivo da Onfly.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+O conector, chamado **"Random"**, cumpre com os seguintes requisitos funcionais:
+* Utiliza a API pública do **Random.org** para gerar números verdadeiramente aleatórios.
+* Possui uma única operação: "True Random Number Generator".
+* Aceita dois parâmetros de entrada numéricos: "Min" e "Max".
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+**Desenvolvido por:** Leonardo Piuzana Pizani
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+---
 
-## Prerequisites
+## Índice
 
-You need the following installed on your development machine:
+* [Pré-requisitos](#pré-requisitos)
+* [Instalação e Execução](#instalação-e-execução)
+* [Configuração do Ambiente](#configuração-do-ambiente)
+* [Como Usar o Conector](#como-usar-o-conector)
+* [Execução dos Testes](#execução-dos-testes)
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+---
 
-## Using this starter
+## Pré-requisitos
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+Para executar este projeto localmente, você precisará ter as seguintes ferramentas instaladas:
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+* [Node.js](https://nodejs.org/) (versão LTS recomendada)
+* [Docker](https://www.docker.com/products/docker-desktop/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
+* [Git](https://git-scm.com/)
 
-## More information
+---
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+## Instalação e Execução
 
-## License
+Siga os passos abaixo para instalar as dependências e executar o serviço localmente.
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+**1. Clonar o Repositório**
+```bash
+git clone [https://github.com/LeoPizani/processoonfly.git](https://github.com/LeoPizani/processoonfly.git)
+cd processoonfly
+```
+
+**2. Instalar as Dependências**
+Este comando irá baixar todas as bibliotecas necessárias para o desenvolvimento do nó.
+```bash
+npm install
+```
+
+**3. Compilar o Projeto**
+O código do nó é escrito em TypeScript (`.ts`) e precisa ser compilado para JavaScript (`.js`).
+```bash
+npm run build
+```
+Este comando cria uma pasta `dist` com os arquivos compilados.
+
+**4. Executar o Serviço com Docker**
+Este comando irá iniciar dois contêineres: um para o n8n e outro para o banco de dados Postgres, conforme os requisitos do desafio.
+```bash
+docker-compose up
+```
+
+**5. Acessar o n8n**
+Após a inicialização dos contêineres (pode levar um minuto na primeira vez), a interface do n8n estará disponível no seu navegador no seguinte endereço:
+[http://localhost:5678](http://localhost:5678)
+
+---
+
+## Configuração do Ambiente
+
+Toda a configuração do ambiente é gerenciada pelo arquivo `docker-compose.yml`.
+
+* **Banco de Dados:** Um serviço do Postgres é iniciado automaticamente e conectado ao n8n através das variáveis de ambiente `DB_TYPE`, `DB_POSTGRESDB_HOST`, etc. Não é necessária nenhuma configuração manual do banco de dados.
+* **Nó Customizado:** O `docker-compose.yml` está configurado para montar o diretório do projeto dentro do contêiner do n8n. Graças à variável `NODE_ENV=development`, qualquer alteração no código (seguida por um `npm run build`) será refletida automaticamente na instância do n8n, facilitando o desenvolvimento.
+* **Credenciais:** O nó "Random" utiliza uma API pública e não requer a configuração de nenhuma credencial ou chave de API.
+
+---
+
+## Como Usar o Conector
+
+1.  Acesse a interface do n8n em `http://localhost:5678`.
+2.  Crie um novo workflow.
+3.  Clique no botão `+` para adicionar um novo nó.
+4.  Na barra de busca, procure por **"Random"**.
+5.  Adicione o nó ao seu workflow e configure os campos "Min" e "Max".
+6.  Clique em "Execute Node" para ver o resultado.
+
+---
+
+## Execução dos Testes
+
+O projeto está configurado com o ESLint para garantir a qualidade e a padronização do código. Para executar o teste de lint, use o seguinte comando:
+
+```bash
+# Verifica por erros de formatação e padrão
+npm run lint
+```
+
+Para tentar corrigir os erros automaticamente:
+```bash
+npm run lintfix
+```
