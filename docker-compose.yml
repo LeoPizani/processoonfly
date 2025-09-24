@@ -1,0 +1,42 @@
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    ports:
+
+      - "5678:5678"
+    environment:
+      - NODE_ENV=development
+
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      # ---
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=postgres
+      - DB_POSTGRESDB_DATABASE=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - N8N_CUSTOM_EXTENSIONS_DIR=/home/node/custom-nodes
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./:/home/node/custom-nodes/n8n-nodes-processoonfly
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:11
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  n8n_data:
+  postgres_data:
